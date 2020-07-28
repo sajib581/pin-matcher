@@ -39,90 +39,104 @@
                                 <div id="3" class="button number">3</div>
                             </div>
                             <div class="calc-button-row">
-                                <div id="backSpace" class="button operator">DEL</div>
-                                <div id="0" class="button number">0</div>
-                                <div id="clear" class="button operator">C</div>
-                            </div>
-                            <div>
-                                <button id="submit-btn" type="submit" class="submit-btn">Submit</button>
-                                <p class="action-left">3 try left</p>
+                                <div id="backSpace" class="button operator">
+                                    <</div>
+                                        <div id="0" class="button number">0</div>
+                                        <div id="clear" class="button operator">C</div>
+                                </div>
+                                <div>
+                                    <button id="submit-btn" type="submit" class="submit-btn">Submit</button>
+                                    <p class="action-left"> <span id="try-number">3</span> try left</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="notify-section">
+                    <p id="fail" class="notify">❌ Pin Didn't Match, Please try again</p>
+                    <p id="success" class="notify">✅ Pin Matched... Secret door is opening for you</p>
+                </div>
             </div>
-            <div class="notify-section">
-                <p id="fail" class="notify">❌ Pin Didn't Match, Please try again</p>
-                <p id="success" class="notify">✅ Pin Matched... Secret door is opening for you</p>
-            </div>
-        </div>
-        <script>
-            let submitButton = false
-            let resultPic
+            <script>
+                let submitButton = false
+                let resultPic
 
-            //Random Number Generate
-            let generetePinButton = document.getElementById("pin-generate")
-            generetePinButton.addEventListener("click", function() {
+                //Random Number Generate
+                let generetePinButton = document.getElementById("pin-generate")
+                generetePinButton.addEventListener("click", function() {
 
-                document.getElementById("pin-output").value = generate_number()
-                hideResultPhoto()
-            })
-
-            //Numberpad Event
-            let number = document.getElementsByClassName("number")
-            for (let i = 0; i < number.length; i++) {
-                number[i].addEventListener("click", function() {
-                    let currentValue = document.getElementById("current-value")
-                    currentValue.value = currentValue.value + number[i].id
+                    document.getElementById("pin-output").value = generate_number()
                     hideResultPhoto()
                 })
-            }
 
-            //Submit Button Event
-            let submitBtn = document.getElementById("submit-btn")
-            submitBtn.addEventListener("click", function() {
-                let randomNumber = document.getElementById("pin-output").value
-                let currentValue = document.getElementById("current-value").value
-                if (randomNumber == currentValue) {
-                    resultPic = document.getElementById("success")
-                    resultPic.style.display = "block"
-                } else {
-                    resultPic = document.getElementById("fail")
-                    resultPic.style.display = "block"
+                //Numberpad Event
+                let number = document.getElementsByClassName("number")
+                for (let i = 0; i < number.length; i++) {
+                    number[i].addEventListener("click", function() {
+                        let currentValue = document.getElementById("current-value")
+                        currentValue.value = currentValue.value + number[i].id
+                        hideResultPhoto()
+                    })
                 }
-                submitButton = true
-            })
 
-            //Backspace Event
-            let backSpace = document.getElementById("backSpace")
-            backSpace.addEventListener("click", function() {
-                let currentValue = document.getElementById("current-value").value
-                let updateValue = currentValue.substring(0, currentValue.length - 1)
-                document.getElementById("current-value").value = updateValue
-                hideResultPhoto()
-            })
+                //Submit Button Event
+                let submitBtn = document.getElementById("submit-btn")
+                submitBtn.addEventListener("click", function() {
+                    checkValidation()
+                    submitButton = true
+                })
 
-            //Clear Button Event
-            let clearBtn = document.getElementById("clear")
-            clearBtn.addEventListener("click", function() {
-                document.getElementById("current-value").value = ""
-                hideResultPhoto()
-            })
+                //Backspace Event
+                let backSpace = document.getElementById("backSpace")
+                backSpace.addEventListener("click", function() {
+                    let currentValue = document.getElementById("current-value").value
+                    let updateValue = currentValue.substring(0, currentValue.length - 1)
+                    document.getElementById("current-value").value = updateValue
+                    hideResultPhoto()
+                })
 
-            //All Functions
-            function generate_number() {
-                let random = Math.round(Math.random() * 10000000) // no chance to bug if random returns 0.0001
-                var randomString = random.toString()
-                var result = randomString.substring(0, 4)
-                return result
-            }
+                //Clear Button Event
+                let clearBtn = document.getElementById("clear")
+                clearBtn.addEventListener("click", function() {
+                    document.getElementById("current-value").value = ""
+                    hideResultPhoto()
+                })
 
-            function hideResultPhoto() {
-                if (submitButton) {
-                    resultPic.style.display = "none"
+                //All Functions
+                function generate_number() {
+                    let random = Math.round(Math.random() * 10000000) // no chance to bug if random returns 0.0001
+                    var randomString = random.toString()
+                    var result = randomString.substring(0, 4)
+                    return result
                 }
-            }
-        </script>
+
+                function hideResultPhoto() {
+                    if (submitButton) {
+                        resultPic.style.display = "none"
+                    }
+
+                }
+
+                function checkValidation() {
+                    let randomNumber = document.getElementById("pin-output").value
+                    let currentValue = document.getElementById("current-value").value
+                    if (randomNumber == currentValue) {
+                        resultPic = document.getElementById("success")
+                        resultPic.style.display = "block"
+                        document.getElementById("try-number").innerText = 3
+                    } else {
+                        resultPic = document.getElementById("fail")
+                        resultPic.style.display = "block"
+
+                        let tryNumber = document.getElementById("try-number").innerText
+                        let updatetryNumber = parseInt(tryNumber) - 1
+                        if (updatetryNumber == -1) {
+                            updatetryNumber = 0;
+                        }
+                        document.getElementById("try-number").innerText = updatetryNumber
+                    }
+                }
+            </script>
 </body>
 
 </html>
